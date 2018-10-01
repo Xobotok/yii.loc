@@ -11,9 +11,12 @@ use app\models\Product;
 class TestController extends Controller {
 
 public function actionIndex() {
-    $product = new Product(1, "Product 1", "Products", 100);
+    $model = new Product(1, "Product 1", "Products", 100);
 
-    return $this->render('index');
+    return $this->render('index', [
+        'model' => $model,
+        'test' => \Yii::$app->test->run()
+    ]);
 }
 
 }
