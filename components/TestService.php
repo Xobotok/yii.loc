@@ -14,4 +14,7 @@ public function run() {
     $this->var = 'TestService is working';
     return $this->var;
 }
+public function createAction() {
+
+}
 }

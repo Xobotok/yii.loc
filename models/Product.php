@@ -1,21 +1,66 @@
 <?php
 
-
 namespace app\models;
 
+use Yii;
+use yii\db\ActiveRecord;
 
-use yii\base\Model;
+/**
+ * This is the model class for table "product".
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $price
+ * @property int $created_at
+ */
+class Product extends ActiveRecord
+{
+    /**
+     * {@inheritdoc}
+     */
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+    public static function tableName()
+    {
+        return 'product';
+    }
 
-class Product extends Model {
-public $id;
-public $name;
-public $category;
-public $price;
-function __construct($id, $name, $category, $price) {
-    parent::__construct();
-    $this->id = $id;
-    $this->name = $name;
-    $this->category = $category;
-    $this->price = $price;
-}
+    public function scenarios() {
+        return [
+            self::SCENARIO_DEFAULT => ['name'],
+            self::SCENARIO_UPDATE => ['price', 'created_at'],
+            self::SCENARIO_CREATE => ['name','price', 'created_at'],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['name', 'price', 'created_at'], 'required'],
+            [['created_at'], 'integer'],
+            [['name'], 'string', 'max' => 20],
+            [['price'], 'integer', 'min' => 0, 'max' => 1000],
+            [['name'], 'filter', 'filter' => function($value) {
+            $val = str_replace(' ', '', $value);
+                return strip_tags($val) ;
+            }],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'name' => 'Name',
+            'price' => 'Price',
+            'created_at' => 'Created At',
+        ];
+    }
+
 }

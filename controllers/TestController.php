@@ -11,7 +11,7 @@ use app\models\Product;
 class TestController extends Controller {
 
 public function actionIndex() {
-    $model = new Product(1, "Product 1", "Products", 100);
+    $model = new Product([]);
 
     return $this->render('index', [
         'model' => $model,
