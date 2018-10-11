@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\User;
 use app\models\search\UserSearch;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,12 +36,14 @@ class UserController extends Controller
      */
     public function actionIndex()
     {
+
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'vardump' =>  $this->actionTest(),
         ]);
     }
 
@@ -52,6 +55,7 @@ class UserController extends Controller
      */
     public function actionView($id)
     {
+
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -123,5 +127,23 @@ class UserController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+    public function actionTest() {
+        $model = new User();
+//        $values = [
+//            'name' => 'Вася',
+//            'access_token' => 'asf210',
+//            'auth_key'=>'dasfq',
+//            'created_at' => 1,
+//            'password_hash'=>'sdfq12341',
+//            'creator_id'=> 124125125,
+//            'username' => 'Vasya',
+//            'updated_at' => 1,
+//            'updater_id' => 1
+//        ];
+//        $model->attributes = $values;
+//        $model->save();
+        $user = $model->getTasks()->all();
+        return VarDumper::dumpAsString($user);
     }
 }
