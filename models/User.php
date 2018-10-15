@@ -3,10 +3,12 @@
 namespace app\models;
 
 use Yii;
+homework6
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "user".
@@ -26,7 +28,11 @@ use yii\web\IdentityInterface;
  * @property Task[] $tasks0
  * @property TaskUser[] $taskUsers
  */
+homework6
 class User extends ActiveRecord implements IdentityInterface {
+class User extends ActiveRecord
+{
+master
     /**
      * {@inheritdoc}
      */

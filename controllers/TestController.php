@@ -4,10 +4,13 @@
 namespace app\controllers;
 
 
+homework6
+master
 use app\models\User;
 use Yii;
 use yii\db\Query;
 use yii\helpers\VarDumper;
+master
 use yii\web\Controller;
 use \yii\widgets\DetailView;
 use app\models\Product;
