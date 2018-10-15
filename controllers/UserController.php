@@ -130,19 +130,6 @@ class UserController extends Controller
     }
     public function actionTest() {
         $model = new User();
-//        $values = [
-//            'name' => 'Вася',
-//            'access_token' => 'asf210',
-//            'auth_key'=>'dasfq',
-//            'created_at' => 1,
-//            'password_hash'=>'sdfq12341',
-//            'creator_id'=> 124125125,
-//            'username' => 'Vasya',
-//            'updated_at' => 1,
-//            'updater_id' => 1
-//        ];
-//        $model->attributes = $values;
-//        $model->save();
         $user = $model->getTasks()->all();
         return VarDumper::dumpAsString($user);
     }

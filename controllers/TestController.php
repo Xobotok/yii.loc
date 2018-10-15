@@ -4,6 +4,7 @@
 namespace app\controllers;
 
 
+use app\models\User;
 use yii\web\Controller;
 use \yii\widgets\DetailView;
 use app\models\Product;
@@ -11,7 +12,7 @@ use app\models\Product;
 class TestController extends Controller {
 
 public function actionIndex() {
-    $model = new Product([]);
+    $model = new User([]);
 
     return $this->render('index', [
         'model' => $model,
