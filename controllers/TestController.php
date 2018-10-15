@@ -4,7 +4,8 @@
 namespace app\controllers;
 
 
-homework5
+homework6
+master
 use app\models\User;
 use Yii;
 use yii\db\Query;
