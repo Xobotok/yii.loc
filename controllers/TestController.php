@@ -4,6 +4,7 @@
 namespace app\controllers;
 
 
+use app\models\User;
 use Yii;
 use yii\db\Query;
 use yii\helpers\VarDumper;
@@ -14,7 +15,7 @@ use app\models\Product;
 class TestController extends Controller {
 
 public function actionIndex() {
-    $model = new Product([]);
+    $model = new User([]);
 
     return $this->render('index', [
         'model' => $model,

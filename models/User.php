@@ -6,6 +6,7 @@ use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "user".
@@ -25,18 +26,32 @@ use yii\db\ActiveRecord;
  * @property Task[] $tasks0
  * @property TaskUser[] $taskUsers
  */
-class User extends ActiveRecord
-{
+class User extends ActiveRecord implements IdentityInterface {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public $password;
+
+    public static function tableName() {
         return 'user';
     }
+
+    public function beforeSave($insert) {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+        if ($insert) {
+            $this->auth_key = Yii::$app->getSecurity()->generateRandomString();
+        }
+        if ($this->password) {
+            $this->password_hash = Yii::$app->getSecurity()->generatePasswordHash($this->password);
+        }
+        return true;
+    }
+
     public function behaviors() {
         return [
-                TimestampBehavior::class,
+            TimestampBehavior::class,
             [
                 'class' => BlameableBehavior::class,
                 'updatedByAttribute' => 'updater_id',
@@ -48,20 +63,18 @@ class User extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['username', 'name', 'password_hash', 'creator_id', 'created_at'], 'required'],
+            [['username', 'name'], 'required'],
             [['creator_id', 'updater_id', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'name', 'password_hash', 'access_token', 'auth_key'], 'string', 'max' => 255],
+            [['username', 'name', 'password', 'access_token', 'auth_key'], 'string', 'max' => 255],
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'username' => 'Username',
@@ -79,24 +92,21 @@ class User extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTasks()
-    {
+    public function getTasks() {
         return $this->hasMany(Task::className(), ['creator_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTasks0()
-    {
+    public function getTasks0() {
         return $this->hasMany(Task::className(), ['updater_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTaskUsers()
-    {
+    public function getTaskUsers() {
         return $this->hasMany(TaskUser::className(), ['user_id' => 'id']);
     }
 
@@ -104,8 +114,52 @@ class User extends ActiveRecord
      * {@inheritdoc}
      * @return UserQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new UserQuery(get_called_class());
     }
+
+    public static function findByUsername($username) {
+        return User::findOne(['username' => $username]);
+    }
+
+    public function validatePassword($password) {
+        return Yii::$app->getSecurity()->validatePassword($password, $this->password_hash);
+    }
+
+    public static function findIdentity($id) {
+        return static::findOne($id);
+    }
+
+    /**
+     * Finds an identity by the given token.
+     *
+     * @param string $token the token to be looked for
+     * @return IdentityInterface|null the identity object that matches the given token.
+     */
+    public static function findIdentityByAccessToken($token, $type = null) {
+        return static::findOne(['access_token' => $token]);
+    }
+
+    /**
+     * @return int|string current user ID
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * @return string current user auth key
+     */
+    public function getAuthKey() {
+        return $this->auth_key;
+    }
+
+    /**
+     * @param string $authKey
+     * @return bool if auth key is valid for current user
+     */
+    public function validateAuthKey($authKey) {
+        return $this->getAuthKey() === $authKey;
+    }
+
 }
