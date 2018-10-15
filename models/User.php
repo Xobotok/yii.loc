@@ -3,6 +3,9 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "user".
@@ -22,7 +25,7 @@ use Yii;
  * @property Task[] $tasks0
  * @property TaskUser[] $taskUsers
  */
-class User extends \yii\db\ActiveRecord
+class User extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -30,6 +33,16 @@ class User extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'user';
+    }
+    public function behaviors() {
+        return [
+                TimestampBehavior::class,
+            [
+                'class' => BlameableBehavior::class,
+                'updatedByAttribute' => 'updater_id',
+                'createdByAttribute' => 'creator_id'
+            ]
+        ];
     }
 
     /**
